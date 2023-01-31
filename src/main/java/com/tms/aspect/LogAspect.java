@@ -1,5 +1,6 @@
 package com.tms.aspect;
 
+import com.tms.service.DoctorService;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -7,6 +8,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 
 @Aspect
 @Component
@@ -20,8 +22,8 @@ public class LogAspect {
     }
 
     @After("within(com.tms.service.DoctorService)")
-    public void logAfterMethod() {
-        log.info("THIS LOG AFTER METHOD!");
+    public void logAfterMethod(JoinPoint joinPoint) {
+        log.info("THIS LOG AFTER METHOD!" );
     }
 
     @AfterReturning("within(com.tms.service.DoctorService)")

@@ -6,17 +6,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class DoctorService {
 
-    public void firstMethod(){
+    public void firstMethod() {
         System.out.println("First method!!");
-        this.secondMethod();
     }
 
-    public void secondMethod(){
+    public void secondMethod() {
         System.out.println("Second method!!");
     }
 
     @CheckTimeAnnotation
-    public String thirdMethod(){
+    public String thirdMethod() {
         System.out.println("Third method!!");
         return "RETURNING VALUE!!!";
     }
