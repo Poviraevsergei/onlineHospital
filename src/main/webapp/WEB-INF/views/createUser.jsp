@@ -8,13 +8,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>CreateUser</title>
+    <title>Create page</title>
 </head>
 <body>
-We created user:
-id: ${id}
-name: ${firstname}
-user: ${user.password}
-
+<h3> We created user:</h3>
+<h3> id: ${user.id}</h3>
+<h3> firstName: ${user.firstName}</h3>
+<h3> lastName: ${user.lastName}</h3>
+<h3> age: ${user.age}</h3>
+<h3> login: ${user.login}</h3>
+<h3> password: ${user.password}</h3>
 </body>
 </html>

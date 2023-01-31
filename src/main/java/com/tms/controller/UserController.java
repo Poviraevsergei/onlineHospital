@@ -4,40 +4,62 @@ import com.tms.domain.User;
 import com.tms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping
-    public String createUser(@RequestParam int id, @RequestParam String firstname, Model model){
-        User user = userService.createUser(id, firstname);
-        //класть в JSP
-        model.addAttribute("id", user.getId());
-        model.addAttribute("firstname", user.getFirstName());
+    @GetMapping("/{id}")
+    public String getUserById(@PathVariable int id, ModelMap model) {
+        User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        model.addAttribute("message", "Programmer Gate");
-        return "createUser";
+        return "userJSP";
     }
 
-    @GetMapping("/{id}")
-    public String getUser(@PathVariable int id) {
-        userService.getUser(id);
-        return "userJSP";
+    @GetMapping
+    public String getAllUsers(ModelMap model) {
+        ArrayList<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "allUsers";
+    }
+
+    @PostMapping
+    public String createUser(@RequestParam String firstName,
+                             @RequestParam String lastName,
+                             @RequestParam int age,
+                             @RequestParam String login,
+                             @RequestParam String password) {
+        int result = userService.createUser(firstName, lastName, age, login, password);
+        return result > 0 ? "success" : "unsuccess";
+    }
+
+    @PutMapping
+    @ResponseBody
+    public String updateUserById(@RequestParam int id,
+                                 @RequestParam String firstName,
+                                 @RequestParam String lastName,
+                                 @RequestParam int age,
+                                 @RequestParam String login,
+                                 @RequestParam String password) {
+        int result = userService.updateUserById(id, firstName, lastName, age, login, password);
+        return result > 0 ? "User was updated!" : "User wasn't updated!";
     }
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public String delete(@PathVariable int id){
-        return "GOOD";
+    public String delete(@PathVariable int id) {
+        int result = userService.deleteUserById(id);
+        return result > 0 ? "User was deleted!" : "User wasn't deleted!";
     }
 }
