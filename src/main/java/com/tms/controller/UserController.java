@@ -1,18 +1,25 @@
 package com.tms.controller;
 
 import com.tms.domain.User;
+import com.tms.exception.UserNotFoundException;
 import com.tms.service.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
+    private final Logger log = Logger.getLogger(this.getClass());
     private final UserService userService;
 
     @Autowired
@@ -21,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String getUserById(@PathVariable int id, ModelMap model) {
+    public String getUserById(@PathVariable int id, ModelMap model) throws UserNotFoundException {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
         return "userJSP";
@@ -35,12 +42,14 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser(@RequestParam String firstName,
-                             @RequestParam String lastName,
-                             @RequestParam int age,
-                             @RequestParam String login,
-                             @RequestParam String password) {
-        int result = userService.createUser(firstName, lastName, age, login, password);
+    public String createUser(@ModelAttribute @Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            for (ObjectError o : bindingResult.getAllErrors()) {
+                log.warn(o.getDefaultMessage());
+            }
+            return "unsuccess";
+        }
+        int result = userService.createUser(user);
         return result > 0 ? "success" : "unsuccess";
     }
 
